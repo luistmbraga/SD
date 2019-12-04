@@ -12,17 +12,19 @@ public class Musica {
     private String interprete;
     private String ano;
     private List<String> etiquetas;
+    private String extensao;
     private int numDownloads;
 
     private Lock lock;
 
-    public Musica(Long id, String titulo, String interprete, String ano, List<String> etiquetas){
+    public Musica(Long id, String titulo, String interprete, String ano, List<String> etiquetas, String extensao){
         this.id = id;
         this.titulo = titulo;
         this.interprete = interprete;
         this.ano = ano;
         this.etiquetas = new ArrayList<>();
         etiquetas.stream().forEach(h-> this.etiquetas.add(h));
+        this.extensao = extensao;
         this.lock = new ReentrantLock();
         this.numDownloads = 0;
     }
@@ -54,8 +56,8 @@ public class Musica {
         this.lock.unlock();
     }
 
-    public String getTitulo(){
-        return this.titulo;
+    public String getTituloDownload(){
+        return this.titulo+this.extensao;
     }
 
     public void lockMusica(){

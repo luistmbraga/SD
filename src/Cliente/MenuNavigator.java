@@ -1,11 +1,8 @@
 package Cliente;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +18,12 @@ public class MenuNavigator implements Runnable{
 
     private int menu_status;
 
-    private int MAXSIZE = 50000000;
+    private int MAXSIZE = 1000000; // 5 000 000 0 = 50 MB
+
+    private String extensionRegex = "(.3gp$|.aa$|.aac$|.aax$|.act$|.aiff$|.alac$|.amr$|.ape$|.au$|." +
+            "awb$|.dct$|.dss$|.dvf$|.flac$|.gsm$|.iklax$|.ivs$|.m4a$|.m4b$|.m4p$|.mmf$|.mp3$|." +
+            "mpc$|.msv$|.nmf$|.nsf$|.ogg$|.oga$|.mogg$|.opus$|.ra$|.rm$|.raw$|.sln$|.tta$|.voc$|." +
+            "vox$|.wav$|.wma$|.wv$|.webm$|.8svx$)";
 
     public MenuNavigator(Socket cs, ClienteState cls) throws IOException {
         this.cls = cls;
@@ -145,15 +147,17 @@ public class MenuNavigator implements Runnable{
 
     }
 
-    public boolean isAudioFile(String file){
+    public String isAudioFile(String file){
+        String r = null;
         Pattern pattern =
-                Pattern.compile("(.3gp$|.aa$|.aac$|.aax$|.act$|.aiff$|.alac$|.amr$|.ape$|.au$|." +
-                        "awb$|.dct$|.dss$|.dvf$|.flac$|.gsm$|.iklax$|.ivs$|.m4a$|.m4b$|.m4p$|.mmf$|.mp3$|." +
-                        "mpc$|.msv$|.nmf$|.nsf$|.ogg$|.oga$|.mogg$|.opus$|.ra$|.rm$|.raw$|.sln$|.tta$|.voc$|." +
-                        "vox$|.wav$|.wma$|.wv$|.webm$|.8svx$)", Pattern.CASE_INSENSITIVE);
+                Pattern.compile(this.extensionRegex, Pattern.CASE_INSENSITIVE);
         Matcher m = pattern.matcher(file);
 
-        return m.find();
+        if (m.find()){
+            r = file.substring(m.start(), m.end());
+        }
+
+        return r;
     }
 
     public void getMusica(File file) throws IOException {
@@ -164,26 +168,33 @@ public class MenuNavigator implements Runnable{
         FileInputStream fis = new FileInputStream(file);
         BufferedInputStream bis = new BufferedInputStream(fis);
         PrintWriter pw = new PrintWriter(this.cs.getOutputStream());
-
+        int currentUntilMax = 0;
 
         while(current!=fileLength){
 
-            if(fileLength - current >= size)
-                current += size;
-            else{
-                size = (int)(fileLength - current);
-                current = fileLength;
+            while (currentUntilMax < this.MAXSIZE && current!=fileLength) {
+
+                if (fileLength - current >= size){
+                    current += size;
+                }
+                else {
+                    size = (int) (fileLength - current);
+                    current = fileLength;
+                }
+                currentUntilMax += size;
+                contents = new byte[size];
+                bis.read(contents, 0, size);
+                pw.println(Base64.getEncoder().encodeToString(contents));
             }
-            contents = new byte[size];
-            bis.read(contents, 0, size);
-            pw.println(Base64.getEncoder().encodeToString(contents));
+            currentUntilMax = 0;
+            pw.flush();
         }
-        pw.flush();
+
 
     }
 
     public void menuTwoUpload(){
-        String titulo, interprete, filePath;
+        String titulo, interprete, filePath, extensao;
         int ano;
         StringBuilder tags;
         Scanner sc = new Scanner(System.in);
@@ -194,8 +205,9 @@ public class MenuNavigator implements Runnable{
         filePath = sc.nextLine();
         file = new File(filePath);
 
-        if (file.exists() && file.isFile() && file.length() < this.MAXSIZE && isAudioFile(titulo = file.getName())){
-            System.out.println("Título da música: "+titulo);
+        if (file.exists() && file.isFile() && ((extensao = isAudioFile(file.getName())) != null) ){
+            System.out.println("Título da música:");
+            titulo = sc.nextLine();
             System.out.println("Intérprete da música:");
             interprete = sc.nextLine();
             System.out.println("Ano da música:");
@@ -230,7 +242,8 @@ public class MenuNavigator implements Runnable{
                     }
                 }
             }
-            this.out.println(String.join(":","UPLOAD",titulo,interprete,String.valueOf(ano), tags.toString()));
+            System.out.println("Uploading...");
+            this.out.println(String.join(":","UPLOAD",titulo,interprete,String.valueOf(ano), tags.toString(), extensao));
             try {
                 getMusica(file);
             } catch (IOException e) {
@@ -277,6 +290,7 @@ public class MenuNavigator implements Runnable{
             }
             case 0:{
                 this.menu_status--;
+                this.out.println("LOGOUT");
                 break;
             }
             default:{

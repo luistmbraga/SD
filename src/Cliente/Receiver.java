@@ -12,9 +12,9 @@ public class Receiver implements Runnable{
 
     private BufferedReader in;
 
-    private String downloadMusicTit;
+    private String downloadMusicPath;
 
-    private String pastaDB = System.getProperty("user.home") + "/Downloads/";
+    private String pastaDB = System.getProperty("user.home") + "\\Downloads\\";
 
     private FileOutputStream fos;
     private BufferedOutputStream bos;
@@ -23,14 +23,6 @@ public class Receiver implements Runnable{
         this.cs = cs;
         this.cls = cls;
         this.in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
-    }
-
-    public boolean warningCheck(String msg){
-        String args [] = msg.split(":");
-
-        boolean valid = args[0].equals("WARNING");
-
-        return valid;
     }
 
     public void limparCampos() throws IOException {
@@ -45,7 +37,7 @@ public class Receiver implements Runnable{
 
             while ((msg = this.in.readLine())!=null) {
 
-                if (msg.startsWith("SUCCESS") || msg.startsWith("WARNING") || msg.startsWith("SEARCHRESULT")){
+                if (msg.startsWith("SUCCESS") || msg.startsWith("WARNING") || msg.startsWith("SEARCHRESULT") || msg.startsWith("UPLOAD_ID")){
                     System.out.println(msg);
                     this.cls.finishWaiting();
                 }
@@ -58,7 +50,16 @@ public class Receiver implements Runnable{
                 }
                 else if (msg.startsWith("OKDOWNLD")){
                     String[] args = msg.split(":");
-                    this.fos = new FileOutputStream(this.pastaDB+args[1]);
+                    // verificar se já existe o ficheiro
+                    //this.downloadMusicPath = this.pastaDB+args[1];
+
+                    File file = new File(this.pastaDB+args[1]);
+
+                    for (int i = 1; file.exists(); i++){
+                        file = new File(this.pastaDB+"("+i+")"+args[1]);
+                    }
+
+                    this.fos = new FileOutputStream(file);
                     this.bos = new BufferedOutputStream(fos);
                 }
                 else if (msg.startsWith("FILEND")){
@@ -74,6 +75,7 @@ public class Receiver implements Runnable{
             }
 
         } catch (IOException e) {
+            this.cls.logout();
             System.out.println("Bye");
         }
 
