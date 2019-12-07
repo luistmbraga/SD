@@ -15,7 +15,7 @@ public class Musicas {
 
     private long musicId;
 
-    private int MAXSIZE = 1000000;
+    private int MAXSIZE = 1500;
 
     private int numDownloads;
 
@@ -125,32 +125,27 @@ public class Musicas {
         File file = new File(this.pastaBD+id+extensao);   // tirar mais tarde mudar para txt
         long fileLength = file.length();
         long current = 0;
-        int size = 10000;
+        int size = this.MAXSIZE;
         byte[] contents;
-        FileInputStream fis = new FileInputStream(file);
-        BufferedInputStream bis = new BufferedInputStream(fis);
+
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
 
         PrintWriter pw = new PrintWriter(cs.getOutputStream());
 
-        int currentUntilMax = 0;
-
         while(current!=fileLength){
 
-            while (currentUntilMax < this.MAXSIZE && current!=fileLength) {
-
-                if (fileLength - current >= size){
-                    current += size;
-                }
-                else {
-                    size = (int) (fileLength - current);
-                    current = fileLength;
-                }
-                currentUntilMax += size;
-                contents = new byte[size];
-                bis.read(contents, 0, size);
-                pw.println(Base64.getEncoder().encodeToString(contents));
+            if (fileLength - current >= size){
+                current += size;
             }
-            currentUntilMax = 0;
+            else {
+                size = (int) (fileLength - current);
+                current = fileLength;
+            }
+
+            contents = new byte[size];
+            bis.read(contents, 0, size);
+            pw.println(Base64.getEncoder().encodeToString(contents));
+
             pw.flush();
         }
 

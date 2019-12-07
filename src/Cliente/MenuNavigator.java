@@ -18,7 +18,7 @@ public class MenuNavigator implements Runnable{
 
     private int menu_status;
 
-    private int MAXSIZE = 1000000; // 5 000 000 0 = 50 MB
+    private int MAXSIZE = 1500; // 5 000 000 0 = 50 MB
 
     private String extensionRegex = "(.3gp$|.aa$|.aac$|.aax$|.act$|.aiff$|.alac$|.amr$|.ape$|.au$|." +
             "awb$|.dct$|.dss$|.dvf$|.flac$|.gsm$|.iklax$|.ivs$|.m4a$|.m4b$|.m4p$|.mmf$|.mp3$|." +
@@ -163,30 +163,26 @@ public class MenuNavigator implements Runnable{
     public void getMusica(File file) throws IOException {
         long fileLength = file.length();
         long current = 0;
-        int size = 10000;
+        int size = this.MAXSIZE;
         byte[] contents;
-        FileInputStream fis = new FileInputStream(file);
-        BufferedInputStream bis = new BufferedInputStream(fis);
+
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
         PrintWriter pw = new PrintWriter(this.cs.getOutputStream());
-        int currentUntilMax = 0;
 
         while(current!=fileLength){
 
-            while (currentUntilMax < this.MAXSIZE && current!=fileLength) {
-
-                if (fileLength - current >= size){
-                    current += size;
-                }
-                else {
-                    size = (int) (fileLength - current);
-                    current = fileLength;
-                }
-                currentUntilMax += size;
-                contents = new byte[size];
-                bis.read(contents, 0, size);
-                pw.println(Base64.getEncoder().encodeToString(contents));
+            if (fileLength - current >= size){
+                current += size;
             }
-            currentUntilMax = 0;
+            else {
+                size = (int) (fileLength - current);
+                current = fileLength;
+            }
+
+            contents = new byte[size];
+            bis.read(contents, 0, size);
+            pw.println(Base64.getEncoder().encodeToString(contents));
+
             pw.flush();
         }
 

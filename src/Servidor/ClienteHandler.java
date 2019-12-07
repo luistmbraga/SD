@@ -41,7 +41,7 @@ public class ClienteHandler implements Runnable {
         this.clientes = clientes;
     }
 
-    public String isAudioFile(String file){
+    private String isAudioFile(String file){
         String r = null;
         Pattern pattern =
                 Pattern.compile(this.extensionRegex, Pattern.CASE_INSENSITIVE);
@@ -54,7 +54,7 @@ public class ClienteHandler implements Runnable {
         return r;
     }
 
-    public void limparCampos() throws IOException {
+    private void limparCampos() throws IOException {
         this.tags.clear();
         this.fos.close();
         this.bos = null;
@@ -66,7 +66,7 @@ public class ClienteHandler implements Runnable {
     }
 
 
-    public void comandos(String msg) throws IOException, InterruptedException {
+    private void comandos(String msg) throws IOException, InterruptedException {
 
 
         if (msg == null){
@@ -74,33 +74,38 @@ public class ClienteHandler implements Runnable {
         }
         // LOGIN:username:pass
         if (msg.startsWith("LOGIN")){
+            System.out.println(msg);  //////////////
             comando_login(msg);
         }
         // REGISTAR:username:pass
         else if(msg.startsWith("REGISTAR")){
+            System.out.println(msg);  //////////////
             comando_registar(msg);
         }
         else if (msg.startsWith("LOGOUT")){
+            System.out.println(msg);  //////////////
             this.userAtual.logout();
         }
         // DOWNLOAD:id
         else if(msg.startsWith("DOWNLOAD")){
+            System.out.println(msg);  //////////////
             comando_download(msg);
         }
         // UPLOAD:titulo:interprete:ano:tag1,tag2,tag3...:extensao
         else if(msg.startsWith("UPLOAD")){
+            System.out.println(msg);  //////////////
             comando_upload(msg);
         }
         else if(msg.startsWith("FILEND")){
+            System.out.println(msg);  //////////////
             comando_filend();
         }
         else if (msg.startsWith("SEARCH")){
+            System.out.println(msg);  //////////////
             comando_search(msg);
         }
         else {
             byte[] contents;
-            contents = new byte[msg.getBytes().length];
-            //contents = msg.getBytes();
             contents = Base64.getDecoder().decode(msg);   // tirar mais tarde
             this.bos.write(contents, 0, contents.length);
         }
@@ -175,8 +180,6 @@ public class ClienteHandler implements Runnable {
             this.out = new PrintWriter(this.cs.getOutputStream(), true);
             String msg;
             while (( msg = this.in.readLine())!=null){
-
-                System.out.println("Recebi a seguinte mensagem: " +msg); /////////////////
                 comandos(msg);
             }
 

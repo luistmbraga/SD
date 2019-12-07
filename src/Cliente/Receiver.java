@@ -12,8 +12,6 @@ public class Receiver implements Runnable{
 
     private BufferedReader in;
 
-    private String downloadMusicPath;
-
     private String pastaDB = System.getProperty("user.home") + "\\Downloads\\";
 
     private FileOutputStream fos;
