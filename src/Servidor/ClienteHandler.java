@@ -151,7 +151,7 @@ public class ClienteHandler implements Runnable {
             this.musicas.download(id, this.cs, isAudioFile(tit));
             this.out.println("FILEND");
         }
-        else this.out.println("WARNING:Id fornecido não existe.");
+        else this.out.println("WARNING:Id - "+id+" fornecido não existe.");
     }
 
     private void comando_registar(String msg) {

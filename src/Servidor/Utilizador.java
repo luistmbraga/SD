@@ -21,6 +21,10 @@ public class Utilizador {
         this.status = false;
     }
 
+    public String getUsername(){
+        return this.username;
+    }
+
     public boolean login(String password, Socket cs){
         if (this.password.equals(password)){
             this.cs = cs;

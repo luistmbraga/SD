@@ -11,7 +11,7 @@ public class Musicas {
     private Map<Long, Musica> musicas;
     private Lock lock;
     private Condition waitDownload;
-    int MAXDOWN = 3;
+    int MAXDOWN = 50;
 
     private long musicId;
 
@@ -97,6 +97,17 @@ public class Musicas {
                 this.waitDownload.await();
 
                 // ordenar threads
+
+                /*
+                this.fairQueue.add(username);
+
+                this.waitDownload.await();
+
+                if(this.fairQueue.peek().equals(username) && this.numDownloads != this.MAXDOWN){
+                       this.fairQueue.remove(username);
+                       break;
+                }
+                 */
             }
             this.numDownloads++;
 
@@ -110,7 +121,7 @@ public class Musicas {
             this.lock.lock();
 
             --this.numDownloads;
-            this.waitDownload.signal();
+            this.waitDownload.signalAll();
 
             this.lock.unlock();
         } catch (InterruptedException e) { // vem do await
