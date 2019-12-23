@@ -16,6 +16,17 @@ public class Servidor {
 
         Clientes clientes = new Clientes();
 
+        PedidosDownload pedidos = new PedidosDownload();
+
+        Thread d = new Thread(new DownloadDispatcher(pedidos, musicas));
+        d.start();
+
+        Thread downld = new Thread(new DownloadServidor(pedidos));
+        downld.start();
+
+        Thread upload = new Thread(new UploadServidor(musicas, clientes));
+        upload.start();
+
         while(true){
 
             cs = ss.accept();

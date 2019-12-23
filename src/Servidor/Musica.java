@@ -37,7 +37,11 @@ public class Musica {
     public String dadosPesquisa(){
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Id "+this.id+",Título "+this.titulo+", Intérprete "+this.interprete+", Ano "+this.ano+", Etiquetas ");
+        sb.append("Id "+this.id);
+        sb.append(", Título "+this.titulo);
+        sb.append(", Intérprete "+this.interprete);
+        sb.append(", Ano "+this.ano);
+        sb.append(", Etiquetas ");
         for(String et: this.etiquetas)
             sb.append(et+";");
 
@@ -56,8 +60,10 @@ public class Musica {
         this.lock.unlock();
     }
 
-    public String getTituloDownload(){
-        return this.titulo+this.extensao;
+    public String getTituloDownload(){        return this.titulo+this.extensao;    }
+
+    public String getExtensao(){
+        return this.extensao;
     }
 
     public void lockMusica(){

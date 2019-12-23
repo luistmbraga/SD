@@ -87,49 +87,22 @@ public class Musicas {
         this.lock.unlock();
     }
 
-    public void download(long id, Socket cs, String extensao) {
+    public void download(long id, Socket cs) throws IOException {
+
+        String extensao;
 
         this.lock.lock();
 
-        try {
-            while (this.numDownloads == this.MAXDOWN) {
+        Musica m = this.musicas.get(id);
 
-                this.waitDownload.await();
+        m.incNumDownld();
 
-                // ordenar threads
+        extensao = m.getExtensao();
 
-                /*
-                this.fairQueue.add(username);
+        this.lock.unlock();
 
-                this.waitDownload.await();
+        getMusica(id, cs, extensao);
 
-                if(this.fairQueue.peek().equals(username) && this.numDownloads != this.MAXDOWN){
-                       this.fairQueue.remove(username);
-                       break;
-                }
-                 */
-            }
-            this.numDownloads++;
-
-            this.musicas.get(id).incNumDownld();
-
-
-            this.lock.unlock();
-
-            getMusica(id, cs, extensao);
-
-            this.lock.lock();
-
-            --this.numDownloads;
-            this.waitDownload.signalAll();
-
-            this.lock.unlock();
-        } catch (InterruptedException e) { // vem do await
-            this.lock.unlock();
-            e.printStackTrace();
-        } catch (IOException e) { // exception vem do get
-            System.out.println("Download Impossível.");  // mandar exception ao cliente
-        }
     }
 
     private void getMusica(long id, Socket cs, String extensao) throws IOException {
@@ -141,7 +114,8 @@ public class Musicas {
 
         BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
 
-        PrintWriter pw = new PrintWriter(cs.getOutputStream());
+
+        OutputStream os = cs.getOutputStream();
 
         while(current!=fileLength){
 
@@ -155,10 +129,14 @@ public class Musicas {
 
             contents = new byte[size];
             bis.read(contents, 0, size);
-            pw.println(Base64.getEncoder().encodeToString(contents));
+            os.write(contents);
 
-            pw.flush();
+            os.flush();
+
         }
 
+        cs.shutdownInput();
+        cs.shutdownOutput();
+        cs.close();
     }
 }

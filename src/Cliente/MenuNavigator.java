@@ -2,7 +2,6 @@ package Cliente;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Base64;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,8 +16,6 @@ public class MenuNavigator implements Runnable{
     private ClienteState cls;
 
     private int menu_status;
-
-    private int MAXSIZE = 1500; // 5 000 000 0 = 50 MB
 
     private String extensionRegex = "(.3gp$|.aa$|.aac$|.aax$|.act$|.aiff$|.alac$|.amr$|.ape$|.au$|." +
             "awb$|.dct$|.dss$|.dvf$|.flac$|.gsm$|.iklax$|.ivs$|.m4a$|.m4b$|.m4p$|.mmf$|.mp3$|." +
@@ -160,35 +157,6 @@ public class MenuNavigator implements Runnable{
         return r;
     }
 
-    public void getMusica(File file) throws IOException {
-        long fileLength = file.length();
-        long current = 0;
-        int size = this.MAXSIZE;
-        byte[] contents;
-
-        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-        PrintWriter pw = new PrintWriter(this.cs.getOutputStream());
-
-        while(current!=fileLength){
-
-            if (fileLength - current >= size){
-                current += size;
-            }
-            else {
-                size = (int) (fileLength - current);
-                current = fileLength;
-            }
-
-            contents = new byte[size];
-            bis.read(contents, 0, size);
-            pw.println(Base64.getEncoder().encodeToString(contents));
-
-            pw.flush();
-        }
-
-
-    }
-
     public void menuTwoUpload(){
         String titulo, interprete, filePath, extensao;
         int ano;
@@ -239,13 +207,11 @@ public class MenuNavigator implements Runnable{
                 }
             }
             System.out.println("Uploading...");
-            this.out.println(String.join(":","UPLOAD",titulo,interprete,String.valueOf(ano), tags.toString(), extensao));
-            try {
-                getMusica(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            this.out.println("FILEND");
+
+            String conteudo = String.join(":",titulo,interprete,String.valueOf(ano), tags.toString(), extensao);
+            Thread t = new Thread(new Uploader(conteudo, file));
+            t.start();
+
         }
         else System.out.println("Ficheiro inválido.");
 
@@ -260,7 +226,7 @@ public class MenuNavigator implements Runnable{
             System.out.println("Id da música:");
             msg = is.nextLine();
             option = Integer.parseInt(msg);
-            sendMsg(String.join(":","DOWNLOAD",String.valueOf(option)));
+            this.out.println(String.join(":","DOWNLOAD",String.valueOf(option)));
         }
         catch (NumberFormatException e){
             System.out.println("Identificador Inválido.");
