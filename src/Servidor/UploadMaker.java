@@ -62,20 +62,19 @@ public class UploadMaker implements Runnable{
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(cs.getInputStream()));
             String msg = in.readLine();
-            System.out.println(msg);
             comando_upload(msg);
 
             receiveData();
 
             this.musicas.upload(this.musicaASerRecebidaId, this.titulo, this.interprete, this.ano, this.tags, this.extensao);
 
-            Thread notify = new Thread(new NotifyUsersThread(this.clientes, this.titulo, this.interprete)); // é o interprete ou o username
+            PrintWriter pw = new PrintWriter(this.cs.getOutputStream(), true);
+            pw.println("UPLOAD_ID:" + this.musicaASerRecebidaId);
+
+            Thread notify = new Thread(new NotifyUsers(this.clientes, this.titulo, this.interprete)); // é o interprete ou o username
             notify.start();
 
             this.bos.close();
-
-            PrintWriter pw = new PrintWriter(this.cs.getOutputStream(), true);
-            pw.println("UPLOAD_ID:" + this.musicaASerRecebidaId);
 
             this.cs.shutdownInput();
             this.cs.shutdownOutput();

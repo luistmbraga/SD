@@ -28,16 +28,13 @@ public class ClienteHandler implements Runnable {
         }
         // LOGIN:username:pass
         if (msg.startsWith("LOGIN")){
-            System.out.println(msg);  //////////////
             comando_login(msg);
         }
         // REGISTAR:username:pass
         else if(msg.startsWith("REGISTAR")){
-            System.out.println(msg);  //////////////
             comando_registar(msg);
         }
         else if (msg.startsWith("LOGOUT")){
-            System.out.println(msg);  //////////////
             this.userAtual.logout();
         }
         // DOWNLOAD:id
@@ -46,7 +43,6 @@ public class ClienteHandler implements Runnable {
             comando_download(msg);
         }
         else if (msg.startsWith("SEARCH")){
-            System.out.println(msg);  //////////////
             comando_search(msg);
         }
 

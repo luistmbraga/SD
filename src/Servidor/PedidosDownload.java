@@ -8,7 +8,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class PedidosDownload {
 
-    private Musicas musicas;
     private int MAXDOWN = 50;
     private int numdownloads;
 
@@ -35,6 +34,7 @@ public class PedidosDownload {
 
     public void notifyWaitDownload(){
         this.lock.lock();
+        System.out.println("Acabei o download e vou notificar a thread");
         this.numdownloads--;
         this.waitDownload.signal();
         this.lock.unlock();
@@ -47,10 +47,12 @@ public class PedidosDownload {
         try {
 
         while( pedidosEspera == 0 && this.pedidos.size() == 0){
-
+            System.out.println("Nao ha clientes, vou dormir.");
             this.waitClients.await();
 
         }
+
+        System.out.println("Os pedidos chegaram, vou trabalhar");
 
         for (Pedido p : this.pedidos)
             r.add(p);
@@ -73,12 +75,14 @@ public class PedidosDownload {
         try {
 
         while (this.numdownloads == this.MAXDOWN) {
-
+                System.out.println("O numero maximo de downloads foi atingido.");
                 this.waitDownload.await();
 
         }
 
         this.numdownloads++;
+
+        this.lock.unlock();
 
         } catch (InterruptedException e) {
             this.lock.unlock();

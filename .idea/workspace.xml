@@ -46,38 +46,12 @@
     </option>
   </component>
   <component name="RunManager" selected="Application.Servidor">
-    <configuration name="Client" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Research.Client" />
-      <module name="SD" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="Research.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Cliente" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Cliente.Cliente" />
       <module name="SD" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="Cliente.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Research.Server" />
-      <module name="SD" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="Research.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -99,17 +73,13 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.Client" />
       <item itemvalue="Application.Cliente" />
-      <item itemvalue="Application.Server" />
       <item itemvalue="Application.Servidor" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Cliente" />
         <item itemvalue="Application.Servidor" />
-        <item itemvalue="Application.Client" />
-        <item itemvalue="Application.Server" />
       </list>
     </recent_temporary>
   </component>

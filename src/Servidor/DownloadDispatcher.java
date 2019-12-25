@@ -43,8 +43,8 @@ public class DownloadDispatcher implements Runnable{
             iter.remove();
         }
 
-        // limpar os atendidos
-        atendidos.clear();
+        System.out.println("Acabei uma ronda");
+
     }
 
     private int countUsers(){
@@ -75,7 +75,7 @@ public class DownloadDispatcher implements Runnable{
                 this.pedidos.addAll(this.pedidosAAtender.getPedidos(this.pedidos.size()));
                 // medir a quantidade de utilizadores na proxima ronda
                 int users = countUsers();
-                // calcular quantos downloads contiguos se pode fazer para o mesmo user
+                // calcular quantos downloads na mesma ronda que se pode fazer para o mesmo user
                 setmaxusercount(users);
                 // iniciar a ronda
                 ronda();

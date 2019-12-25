@@ -3,15 +3,12 @@ package Servidor;
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Musicas {
     private Map<Long, Musica> musicas;
     private Lock lock;
-    private Condition waitDownload;
-    int MAXDOWN = 50;
 
     private long musicId;
 
@@ -24,7 +21,6 @@ public class Musicas {
     public Musicas(){
         this.musicas = new HashMap<>();
         this.lock = new ReentrantLock();
-        this.waitDownload = this.lock.newCondition();
         this.musicId = 0;
         this.numDownloads = 0;
     }
