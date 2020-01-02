@@ -29,7 +29,7 @@ public class Clientes {
         }
 
         this.lock.unlock();
-        
+
         return registou;
     }
 
