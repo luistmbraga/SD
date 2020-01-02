@@ -26,9 +26,10 @@ public class Clientes {
             registou = true;
             this.clientes.put(username, new Utilizador(username, pass));
 
-        this.lock.unlock();
         }
 
+        this.lock.unlock();
+        
         return registou;
     }
 
