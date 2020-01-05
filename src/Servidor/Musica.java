@@ -45,9 +45,9 @@ public class Musica {
         for(String et: this.etiquetas)
             sb.append(et+";");
 
-        this.lock.lock(); // necessario ?
+        this.lock.lock();
 
-        sb.append(", Número de Downloads "+this.numDownloads + " ||");
+        sb.append(", Número de Downloads "+this.numDownloads + " || ");
 
         this.lock.unlock();
 
