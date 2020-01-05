@@ -39,7 +39,6 @@ public class ClienteHandler implements Runnable {
         }
         // DOWNLOAD:id
         else if(msg.startsWith("DOWNLOAD")){
-            System.out.println(msg);  //////////////
             comando_download(msg);
         }
         else if (msg.startsWith("SEARCH")){
