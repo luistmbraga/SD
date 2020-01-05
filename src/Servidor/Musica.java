@@ -47,7 +47,7 @@ public class Musica {
 
         this.lock.lock(); // necessario ?
 
-        sb.append(", Número de Downloads "+this.numDownloads);
+        sb.append(", Número de Downloads "+this.numDownloads + " ||");
 
         this.lock.unlock();
 

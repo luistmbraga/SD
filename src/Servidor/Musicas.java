@@ -36,7 +36,7 @@ public class Musicas {
                 temEtiqueta.add(h.getKey());
             }
         });
-        temEtiqueta.stream().sorted().forEach(h -> this.musicas.get(h).lockMusica()); // necessario ?
+        temEtiqueta.stream().sorted().forEach(h -> this.musicas.get(h).lockMusica());
 
         this.lock.unlock();
 
