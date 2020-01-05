@@ -82,11 +82,10 @@ public class PedidosDownload {
 
         this.numdownloads++;
 
-        this.lock.unlock();
-
         } catch (InterruptedException e) {
-            this.lock.unlock();
             e.printStackTrace();
+        }finally {
+            this.lock.unlock();
         }
     }
 

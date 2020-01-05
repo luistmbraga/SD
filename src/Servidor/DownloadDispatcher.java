@@ -17,6 +17,7 @@ public class DownloadDispatcher implements Runnable{
     }
 
     private void ronda() throws InterruptedException {
+        //  username  #pedidosAtendidos
         Map<String, Integer> atendidos = new HashMap<>();
 
         ListIterator<Pedido> iter = this.pedidos.listIterator();
@@ -30,7 +31,7 @@ public class DownloadDispatcher implements Runnable{
                 if (n == this.sameUserDownloads) continue;
                 else atendidos.replace(u, n++);
             }
-            else atendidos.put(u, 0);
+            else atendidos.put(u, 1);
             // ver se o numero de downloads ja foi excedido
 
             this.pedidosAAtender.incDownload();
